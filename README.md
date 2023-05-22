@@ -1,0 +1,2 @@
+# auto-config-commit
+PowerSTIG
