@@ -1,0 +1,49 @@
+# Import the PowerSTIG module
+Import-Module PowerSTIG
+
+# Parse the SCAP scan or import the XCCDF file
+$scapResults = Parse-SCAPScan -Path "C:\Path\to\scap_scan.xml"
+# or
+Import-SCAP -Path "C:\Path\to\xccdf_file.xccdf"
+
+# Retrieve the current system configuration
+$currentConfiguration = Get-ItemProperty -Path "HKLM:\Software\SomeKey"
+
+# Compare the current configuration against the desired configuration
+$desiredConfiguration = $scapResults | Where-Object { $_.Setting -eq "SomeSetting" }
+if ($currentConfiguration.SomeSetting -ne $desiredConfiguration.Value) {
+    # Apply the desired configuration change
+    Set-ItemProperty -Path "HKLM:\Software\SomeKey" -Name "SomeSetting" -Value $desiredConfiguration.Value
+}
+
+# Continue comparing and applying other configuration changes as needed
+# ...
+
+# Save the script file
+$scriptPath = "C:\Path\to\automate_config_changes.ps1"
+$scriptContent = @"
+# Import the PowerSTIG module
+Import-Module PowerSTIG
+
+# Parse the SCAP scan or import the XCCDF file
+$scapResults = Parse-SCAPScan -Path "C:\Path\to\scap_scan.xml"
+# or
+Import-SCAP -Path "C:\Path\to\xccdf_file.xccdf"
+
+# Retrieve the current system configuration
+$currentConfiguration = Get-ItemProperty -Path "HKLM:\Software\SomeKey"
+
+# Compare the current configuration against the desired configuration
+$desiredConfiguration = $scapResults | Where-Object { `$_.Setting -eq "SomeSetting" }
+if (`$currentConfiguration.SomeSetting -ne `$desiredConfiguration.Value) {
+    # Apply the desired configuration change
+    Set-ItemProperty -Path "HKLM:\Software\SomeKey" -Name "SomeSetting" -Value `$desiredConfiguration.Value
+}
+
+# Continue comparing and applying other configuration changes as needed
+# ...
+"@
+
+$scriptContent | Out-File -FilePath $scriptPath -Encoding UTF8
+
+Write-Host "Script saved as: $scriptPath"
